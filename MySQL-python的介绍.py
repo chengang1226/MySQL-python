@@ -202,5 +202,72 @@ except:
     #发生错误时回滚
     conn.rollback()
 
+# 设置Product的主键
+import MySQLdb
+conn = MySQLdb.connect(host="localhost", user="root", passwd="125179chengang", db="mysql", charset="utf8")
+cur = conn.cursor()
+sql_12 = 'alter table Product add primary key(product_id)'
+cur.execute(sql_12)
+conn.commit()
+conn.close()
 
+# 新建折扣表
+import MySQLdb
+conn = MySQLdb.connect(host="localhost", user="root", passwd="125179chengang", db="mysql", charset="utf8")
+cur = conn.cursor()
+sql_13 = """CREATE TABLE Discount (
+         discount_id    CHAR(4)    NOT NULL,
+         sale_discount  FLOAT(2,1))"""
+cur.execute(sql_13)
+conn.commit()
+conn.close()
+
+# 设置Discount的主键
+import MySQLdb
+conn = MySQLdb.connect(host="localhost", user="root", passwd="125179chengang", db="mysql", charset="utf8")
+cur = conn.cursor()
+sql_14 = 'alter table Discount add primary key(discount_id)'
+cur.execute(sql_14)
+conn.commit()
+conn.close()
+
+# 插入数据
+import MySQLdb
+conn = MySQLdb.connect(host="localhost", user="root", passwd="125179chengang", db="mysql", charset="utf8")
+cur = conn.cursor()
+sql_15 = 'insert into Discount(discount_id, sale_discount) ' \
+        'values (%s, %s)'
+param_1 = (('0001', '0.5'), ('0002', '0.2'),('0003', '0.5'), ('0004', '0.3'),
+          ('0005', '0.6'), ('0006', '0.7'),('0007', '0.4'), ('0008', '0.8'), ('0009', '0.9'))
+cur.executemany(sql_15, param_1)
+conn.commit()
+conn.close()
+
+# 连接Product和Discount
+import MySQLdb
+conn = MySQLdb.connect(host="localhost", user="root", passwd="125179chengang", db="mysql", charset="utf8")
+cur = conn.cursor()
+sql_16 = 'select * from Product inner join Discount on product_id = discount_id'
+try:
+    cur.execute(sql_16)
+    result_6 = cur.fetchall()
+    for row in result_6:
+        print("product_id=%s, product_name=%s, product_type=%s, sale_price=%s, purchase_price=%s, discount_id=%s, "\
+              "sale_discount=%s" % row)
+except:
+    print("Error: unable to fetch data")
+conn.close()
+
+# 一对一查询
+import MySQLdb
+conn = MySQLdb.connect(host="localhost", user="root", passwd="125179chengang", db="mysql", charset="utf8")
+cur = conn.cursor()
+sql_17 = 'select product_id as product_id, product_name as product_name, sale_discount as sale_discount from ' \
+         'Product inner join Discount on product_id = discount_id where sale_discount >%s '% (0.5)
+try:
+    cur.execute(sql_17)
+    result_7 = cur.fetchall()
+    print(result_7)
+except:
+    print("Error")
 

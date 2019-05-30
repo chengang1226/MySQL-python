@@ -49,27 +49,34 @@ sql_1 = """CREATE TABLE Product (
          sale_price INT ,
          purchase_price INT )"""
 cur.execute(sql_1)
+#提交事务
 conn.commit()
+#关闭连接
 conn.close()
 
 # 向表格批量插入数据
 import MySQLdb
 conn = MySQLdb.connect(host="localhost", user="root", passwd="125179chengang", db="mysql", charset="utf8")
 cur = conn.cursor()
+#sql插入语句
 sql_2 = 'insert into Product(product_id, product_name, product_type, sale_price, purchase_price) ' \
         'values (%s, %s, %s, %s, %s)'
 param = (('0001', '休闲裤', '服装', 1000, 500), ('0002', '打孔器', '办公用品', 500, 320),
          ('0003', '针织衫', '服装', 4000, 2000), ('0004', '电饭锅', '厨房用品', 3000, 1500),
          ('0005', '纯牛奶', '饮品', 2000, 1200), ('0006', '电脑', '办公用品', 10000, 5200),
          ('0007', '书本', '图书', 1500, 600), ('0008', '洗衣液', '生活用品', 1200, 400))
+#执行多条语句
 cur.executemany(sql_2, param)
+#提交事务
 conn.commit()
+#关闭连接
 cur.close()
 
 # 增加数据
 import MySQLdb
 conn = MySQLdb.connect(host="localhost", user="root", passwd="125179chengang", db="mysql", charset="utf8")
 cur = conn.cursor()
+#sql增加语句
 sql_3 = 'insert into Product(product_id, product_name, product_type, sale_price, purchase_price) ' \
         'values ("0009", "雨伞", "生活用品", 2200, 1000)'
 cur.execute(sql_3)
@@ -79,16 +86,21 @@ conn.commit()
 import MySQLdb
 conn = MySQLdb.connect(host="localhost", user="root", passwd="125179chengang", db="mysql", charset="utf8")
 cur = conn.cursor()
+#sql删除语句
 sql_4 = 'delete from Product where product_id = "0007"'
 cur.execute(sql_4)
 conn.commit()
-
+#sql删除语句
 sql_5 = 'delete from Product where sale_price >%s ' % ("4000")
 try:
+    #执行sql语句
     cur.execute(sql_5)
+    #提交到数据库执行
     conn.commit()
 except:
+    #发生错误时回滚
     conn.rollback()
+#关闭数据库连接
 conn.close()
 
 # 数据查询
@@ -96,9 +108,12 @@ conn.close()
 import MySQLdb
 conn = MySQLdb.connect(host="localhost", user="root", passwd="125179chengang", db="mysql", charset="utf8")
 cur = conn.cursor()
+#sql条件查询语句
 sql_6 = "select * from Product where purchase_price > %s" % (1200)
 try:
+    #执行sql语句
     cur.execute(sql_6)
+    #获取所有记录列表
     result1 = cur.fetchall()
     for row in result1:
        product_id = row[0]
@@ -106,6 +121,7 @@ try:
        product_type= row[2]
        sale_price = row[3]
        purchase_price = row[4]
+       #输出结果
        print("product_id=%s, product_name=%s, product_type=%s, sale_price=%s, purchase_price=%s" % \
               (product_id, product_name, product_type, sale_price, purchase_price))
 except:
@@ -115,9 +131,12 @@ except:
 import MySQLdb
 conn = MySQLdb.connect(host="localhost", user="root", passwd="125179chengang", db="mysql", charset="utf8")
 cur = conn.cursor()
+#sql投影查询语句
 sql_7 = "select product_id, purchase_price from Product"
 try:
+    #执行sql语句
     cur.execute(sql_7)
+    #获取结果记录
     result2 = cur.fetchall()
     for row in result2:
         print("product_id=%s, purchase_price=%s" % row)
@@ -128,9 +147,12 @@ except:
 import MySQLdb
 conn = MySQLdb.connect(host="localhost", user="root", passwd="125179chengang", db="mysql", charset="utf8")
 cur = conn.cursor()
+#sql排序查询语句
 sql_8 = "select product_id, sale_price from Product order by sale_price desc"
 try:
+    #执行sql语句
     cur.execute(sql_8)
+    #获取结果记录
     result3 = cur.fetchall()
     for row in result3:
         print("product_id=%s, sale_price=%s" % row)
@@ -141,19 +163,26 @@ except:
 import MySQLdb
 conn = MySQLdb.connect(host="localhost", user="root", passwd="125179chengang", db="mysql", charset="utf8")
 cur = conn.cursor()
+#sql计数语句
 sql_9 = "select count(*) from Product"
 try:
+    #执行sql语句
     cur.execute(sql_9)
+    #获取结果
     result_4 = cur.fetchall()
+    #输出结果
     print(result_4)
 except:
     print("Error: unable to fetch data")
-
+#sql计算平均数语句
 sql_10 = "select avg(sale_price) from Product"
 cur.execute("select avg(sale_price) from Product")
 try:
+    #执行sql语句
     cur.execute(sql_10)
+    #获取结果
     result_5 = cur.fetchall()
+    #输出结果
     print(result_5)
 except:
     print("Error: unable to fetch data")
@@ -162,11 +191,15 @@ except:
 import MySQLdb
 conn = MySQLdb.connect(host="localhost", user="root", passwd="125179chengang", db="mysql", charset="utf8")
 cur = conn.cursor()
+#sql更新语句
 sql_11 = 'update Product set sale_price = 3000 where product_id = "0003"'
 try:
+    #执行sql语句
     cur.execute(sql_11)
+    #提交修改
     conn.commit()
 except:
+    #发生错误时回滚
     conn.rollback()
 
 

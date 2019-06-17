@@ -1,0 +1,71 @@
+satrt transaction;
+
+# 将所有字段重命名为中文形式，并查询所有数据
+
+alter table purchase change user_ID 用户ID varchar(255);
+
+alter table purchase change Product_ID 产品ID varchar(255);
+
+alter table purchase change Gender 性别 varchar(255);
+
+alter table purchase change Age 年龄 varchar(255);
+
+alter table purchase change occupation 职业 varchar(255);
+
+alter table purchase change City_Category 城市类别 varchar(255);
+
+alter table purchase change Stay_In_Current_City_Years 居住时间 varchar(255);
+
+alter table purchase change user_ID 用户ID varchar(255);
+
+alter table purchase change Marital_Status 婚姻状况 varchar(255);
+
+alter table purchase change Product_Category_1 产品类别1 varchar(255);
+
+alter table purchase change Product_Category_2 产品类别2 varchar(255);
+
+alter table purchase change Product_Category_3 产品类别3 varchar(255);
+
+alter table purchase change Purchase 价格 varchar(255);
+
+select * from purchase;
+
+commit;
+
+# 删除冗余列
+
+alter table purchase drop 用户ID, drop 产品ID;
+
+# 缺失值处理
+
+update purchase set 产品类别1 = 0 where 产品类别1 is null;
+
+update purchase set 产品类别2 = 0 where 产品类别2 is null;
+
+update purchase set 产品类别3 = 0 where 产品类别3 is null;
+
+# 数据分析
+
+# (1)男生和女生的人数
+
+select 性别, count(性别) from purchase group by 性别;
+
+# (2)不同居住时间的人数
+
+select 居住时间, count(居住时间) from purchase group by 居住时间;
+
+# (3)不同年龄段的购买力
+
+select 年龄, sum(价格) as 购买力 from purchase group by 年龄;
+
+# (4)同一城市类别下不同居住时间的购买力
+
+select 城市类别, 居住时间, sum(价格) as 花费 from purchase where 城市类别 = 'A' group by 居住时间;
+
+select 城市类别, 居住时间, sum(价格) as 花费 from purchase where 城市类别 = 'B' group by 居住时间;
+
+select 城市类别, 居住时间, sum(价格) as 花费 from purchase where 城市类别 = 'C' group by 居住时间;
+
+# (5) 不同年龄对不同产品的需求
+
+select 年龄, sum(产品类别1), sum(产品类别2), sum(产品类别3) from purchase group by 年龄;
